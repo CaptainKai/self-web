@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>李凯 (Kai Li) - 个人主页与技术作品集 | LLM Infrastructure & Full-Stack Engineer</title>
+  <meta name="description" content="李凯的个人网站与在线求职简历。北京科技大学硕博连读背景，前腾讯多模态大模型组实习生。主攻大模型基础设施、AI智能体网关、事件知识图谱重构及量化投资系统。">
+  <meta name="keywords" content="李凯, Kai Li, 个人网站, 简历, LLM Gateway, 智能体架构, 知识图谱, 量化交易, 腾讯实习">
+  <meta name="author" content="Kai Li (李凯)">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/print.css" media="print">
+
+  <!-- Favicon placeholder (inline SVG) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+</head>
+<body>
+
+  <!-- Floating Navigation Bar -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="#" class="nav-brand gradient-text">Kai Li · 李凯</a>
+
+      <nav>
+        <ul class="nav-links" id="nav-links-list">
+          <li><a href="#about" class="nav-link" id="nav-link-about">关于我</a></li>
+          <li><a href="#experience" class="nav-link" id="nav-link-experience">工作与教育</a></li>
+          <li><a href="#skills" class="nav-link" id="nav-link-skills">专业技能</a></li>
+          <li><a href="#projects" class="nav-link" id="nav-link-projects">核心项目</a></li>
+          <li><a href="#research" class="nav-link" id="nav-link-research">科研成果</a></li>
+          <li><a href="#" class="nav-link" id="nav-link-print" style="color: var(--accent-cyan);">完整简历 (PDF)</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-controls">
+        <!-- Language Switcher -->
+        <button id="lang-toggle-btn" class="icon-btn" onclick="window.toggleLanguage()" title="Switch to English / 切换语言">
+          <span class="lang-label">EN</span>
+        </button>
+
+        <!-- Theme Switcher -->
+        <button id="theme-toggle-btn" class="icon-btn" onclick="window.toggleTheme()" title="Switch Theme">
+          <span>🌙</span>
+        </button>
+
+        <!-- Mobile Menu Toggle -->
+        <button id="mobile-menu-btn" class="icon-btn mobile-menu-btn" title="Toggle Navigation">
+          <span>☰</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero-section" id="hero">
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-badge-wrapper">
+            <span class="badge" id="hero-badge-text">Seeking Full-Time Opportunities</span>
+          </div>
+
+          <h1 class="hero-title" id="hero-name">李凯 (Kai Li)</h1>
+          <h2 class="hero-subtitle" id="hero-subtitle">大模型基础设施 / LLM Agent 架构 / 后端全栈 / 量化金融工程</h2>
+
+          <p class="hero-description" id="hero-description">
+            北京科技大学硕博连读背景，前腾讯多模态大模型组实习生。专注于高可用大模型 API 网关治理、AI 智能体架构、复杂事件知识图谱重构及多资产量化投资策略系统研发。
+          </p>
+
+          <div class="hero-meta-row">
+            <div class="hero-meta-item">
+              <span>📍</span>
+              <span id="hero-location-text">北京市海淀区 / 北京科技大学</span>
+            </div>
+            <div class="hero-meta-item">
+              <span>✉️</span>
+              <a id="hero-email-link" href="mailto:m13121032012@163.com">m13121032012@163.com</a>
+            </div>
+            <div class="hero-meta-item">
+              <span>📱</span>
+              <a id="hero-phone-link" href="tel:13121032013">+86 13121032013</a>
+            </div>
+          </div>
+
+          <div class="hero-actions">
+            <button id="hero-print-btn" class="btn btn-primary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+              <span>打印 / 导出 PDF 简历</span>
+            </button>
+            <a id="hero-projects-btn" href="#projects" class="btn btn-outline">
+              <span>浏览深度项目</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
+            </a>
+          </div>
+
+          <!-- Stats Grid -->
+          <div class="stats-bar">
+            <div class="stats-grid" id="stats-grid">
+              <!-- Dynamically rendered via main.js -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="section" id="about">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title" id="about-title">关于我</h2>
+          <p class="section-subtitle" id="about-subtitle">背景简介与职业追求</p>
+        </div>
+
+        <div class="glass-card about-card">
+          <div class="about-body">
+            <p id="about-p1"></p>
+            <p id="about-p2"></p>
+            <p id="about-p3"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Experience Section (Tencent) -->
+    <section class="section" id="experience">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title" id="exp-title">工作与实习经历</h2>
+          <p class="section-subtitle" id="exp-subtitle">一线大厂核心业务线技术沉淀</p>
+        </div>
+
+        <div class="timeline" id="exp-timeline">
+          <!-- Dynamically rendered via main.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Education Section -->
+    <section class="section" id="education">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title" id="edu-title">教育背景</h2>
+          <p class="section-subtitle" id="edu-subtitle">名校硕博连读科研与工程学术沉淀</p>
+        </div>
+
+        <div class="edu-grid" id="edu-grid">
+          <!-- Dynamically rendered via main.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="section" id="skills">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title" id="skills-title">专业技能矩阵</h2>
+          <p class="section-subtitle" id="skills-subtitle">从底层算法、分布式网络到全栈产品工程的综合技能储备</p>
+        </div>
+
+        <div class="skills-grid" id="skills-categories-grid">
+          <!-- Dynamically rendered via main.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Projects Section -->
+    <section class="section" id="projects">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title" id="projects-title">核心工业与系统级项目</h2>
+          <p class="section-subtitle" id="projects-subtitle">深度主导的 5 大系统架构实践（点击卡片查阅详细架构与工程攻坚）</p>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="projects-filters">
+          <button class="filter-btn active" data-filter="all" id="filter-btn-all">全部项目</button>
+          <button class="filter-btn" data-filter="llm" id="filter-btn-llm">大模型与网关</button>
+          <button class="filter-btn" data-filter="kg" id="filter-btn-kg">知识图谱</button>
+          <button class="filter-btn" data-filter="quant" id="filter-btn-quant">量化金融与数据</button>
+        </div>
+
+        <div class="projects-grid" id="projects-grid">
+          <!-- Dynamically rendered via main.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Research & Patents Section -->
+    <section class="section" id="research">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title" id="research-title">科研成果与发明专利</h2>
+          <p class="section-subtitle" id="research-subtitle">顶会顶刊学术代表作与核心知识产权</p>
+        </div>
+
+        <div class="research-columns">
+          <div>
+            <h3 class="research-sub-title" id="papers-header-title">学术论文</h3>
+            <div class="papers-list" id="papers-list">
+              <!-- Dynamically rendered via main.js -->
+            </div>
+          </div>
+
+          <div>
+            <h3 class="research-sub-title" id="patents-header-title">国家发明专利</h3>
+            <div class="patents-list" id="patents-list">
+              <!-- Dynamically rendered via main.js -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Project Deep-Dive Modal Overlay -->
+  <div class="modal-overlay" id="project-modal-overlay">
+    <div class="modal-container" id="project-modal-container">
+      <button class="modal-close-btn" id="modal-close-btn" title="Close">✕</button>
+
+      <div class="modal-header">
+        <div class="modal-badge-row">
+          <span class="project-badge" id="modal-project-badge">Badge</span>
+        </div>
+        <h2 class="modal-title" id="modal-project-title">Project Title</h2>
+        <p class="modal-tagline" id="modal-project-tagline">Project Tagline</p>
+        <div class="modal-techs" id="modal-project-techs"></div>
+      </div>
+
+      <!-- Key Quantitative Metrics Grid -->
+      <div class="modal-metrics-grid" id="modal-project-metrics"></div>
+
+      <!-- Project Gallery Box (Screenshots) -->
+      <div class="modal-section" id="modal-project-gallery-box" style="display: none;">
+        <h3 class="modal-section-title">
+          <span>🖼️</span>
+          <span id="modal-gallery-title">实盘系统界面与量化看板</span>
+        </h3>
+        <div class="gallery-grid" id="modal-project-gallery-grid"></div>
+      </div>
+
+      <!-- Project Architecture Diagram & Dataflow Box -->
+      <div class="modal-section" id="modal-project-arch-box" style="display: none;">
+        <h3 class="modal-section-title">
+          <span>📐</span>
+          <span id="modal-arch-title">系统核心架构与数据流拓扑</span>
+        </h3>
+        <div class="arch-summary-card" id="modal-project-arch-summary"></div>
+        <div class="arch-flow-steps" id="modal-project-arch-flow"></div>
+        <div class="arch-highlights-box" id="modal-project-arch-highlights"></div>
+      </div>
+
+      <!-- Deep Dive Sections -->
+      <div class="modal-section">
+        <h3 class="modal-section-title">
+          <span>⚠️</span>
+          <span id="modal-problem-title">面临痛点与架构瓶颈</span>
+        </h3>
+        <div class="modal-section-body" id="modal-project-problem"></div>
+      </div>
+
+      <div class="modal-section">
+        <h3 class="modal-section-title">
+          <span>💡</span>
+          <span id="modal-solution-title">核心技术方案与攻坚</span>
+        </h3>
+        <div class="modal-section-body" id="modal-project-solution"></div>
+      </div>
+
+      <div class="modal-section" id="modal-project-pipeline-box">
+        <h3 class="modal-section-title">
+          <span>⚙️</span>
+          <span id="modal-pipeline-title">流水线与关键机制</span>
+        </h3>
+        <div class="modal-section-body" id="modal-project-pipeline"></div>
+      </div>
+
+      <div class="modal-section" id="modal-project-future-box">
+        <h3 class="modal-section-title">
+          <span>🚀</span>
+          <span id="modal-future-title">演进规划与业务成效</span>
+        </h3>
+        <div class="modal-section-body" id="modal-project-future"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-left">
+        <div class="footer-copyright" id="footer-copyright">© 2026 李凯 (Kai Li). 版权所有.</div>
+        <div class="footer-quote" id="footer-quote">以严谨的工程思维驾驭前沿 AI，以扎实的数据底座构建可靠系统。</div>
+      </div>
+      <div>
+        <button id="footer-back-to-top" class="btn btn-outline btn-sm">返回顶部</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/projects-modal.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,298 @@
+/* ==========================================================================
+   Print Stylesheet (Resume PDF Export Optimization)
+   Activated on window.print() / Ctrl+P
+   ========================================================================== */
+
+@media print {
+  /* Reset page formatting */
+  @page {
+    margin: 1.5cm 1.5cm;
+    size: A4 portrait;
+  }
+
+  *, *::before, *::after {
+    background: transparent !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.5;
+    background: #ffffff !important;
+    color: #111111 !important;
+  }
+
+  /* Hide UI elements that shouldn't appear on a paper resume */
+  .navbar,
+  .nav-controls,
+  .mobile-menu-btn,
+  .hero-actions,
+  .hero-badge-wrapper,
+  .projects-filters,
+  .project-footer,
+  .modal-overlay,
+  .footer,
+  #theme-toggle-btn,
+  #lang-toggle-btn,
+  .btn,
+  svg {
+    display: none !important;
+  }
+
+  .container {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .section {
+    padding: 12pt 0 !important;
+  }
+
+  .section-header {
+    text-align: left !important;
+    margin-bottom: 8pt !important;
+    border-bottom: 1.5pt solid #222222;
+    padding-bottom: 3pt;
+  }
+
+  .section-title {
+    font-size: 13pt !important;
+    font-weight: 700 !important;
+    margin-bottom: 0 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .section-subtitle {
+    display: none !important;
+  }
+
+  /* Hero Section for Resume Header */
+  .hero-section {
+    padding-top: 0 !important;
+    padding-bottom: 15pt !important;
+    border-bottom: 2pt solid #000000;
+    margin-bottom: 15pt;
+  }
+
+  .hero-content {
+    text-align: left !important;
+    max-width: 100% !important;
+  }
+
+  .hero-title {
+    font-size: 20pt !important;
+    font-weight: 800 !important;
+    margin-bottom: 4pt !important;
+  }
+
+  .hero-subtitle {
+    font-size: 11pt !important;
+    font-weight: 600 !important;
+    margin-bottom: 6pt !important;
+  }
+
+  .hero-description {
+    font-size: 9.5pt !important;
+    line-height: 1.45 !important;
+    margin-bottom: 8pt !important;
+  }
+
+  .hero-meta-row {
+    justify-content: flex-start !important;
+    gap: 15pt !important;
+    margin-bottom: 0 !important;
+    font-size: 9pt !important;
+  }
+
+  /* Stats Bar Compact */
+  .stats-bar {
+    margin-top: 10pt !important;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 8pt !important;
+  }
+
+  .stat-card {
+    border: 1pt solid #dddddd !important;
+    padding: 6pt !important;
+  }
+
+  .stat-number {
+    font-size: 12pt !important;
+  }
+
+  .stat-label {
+    font-size: 7.5pt !important;
+  }
+
+  /* Cards and sections */
+  .glass-card {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin-bottom: 10pt !important;
+    transform: none !important;
+  }
+
+  /* Skills Compact Grid */
+  .skills-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10pt !important;
+  }
+
+  .skill-cat-title {
+    font-size: 10.5pt !important;
+    font-weight: 700 !important;
+    margin-bottom: 6pt !important;
+    border-bottom: 0.5pt solid #cccccc !important;
+    padding-bottom: 2pt !important;
+  }
+
+  .skill-list {
+    gap: 6pt !important;
+  }
+
+  .skill-name {
+    font-size: 9pt !important;
+    font-weight: 700 !important;
+  }
+
+  .skill-desc {
+    font-size: 8.5pt !important;
+  }
+
+  /* Timeline (Experience) */
+  .timeline::before {
+    display: none !important;
+  }
+
+  .timeline-item {
+    padding-left: 0 !important;
+    margin-bottom: 12pt !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .timeline-marker {
+    display: none !important;
+  }
+
+  .timeline-header {
+    margin-bottom: 4pt !important;
+  }
+
+  .timeline-company {
+    font-size: 11pt !important;
+  }
+
+  .timeline-bullets li {
+    font-size: 9pt !important;
+    line-height: 1.4 !important;
+    padding-left: 12pt !important;
+  }
+
+  /* Education */
+  .edu-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8pt !important;
+  }
+
+  .edu-card {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .edu-header {
+    margin-bottom: 2pt !important;
+  }
+
+  .edu-school {
+    font-size: 10.5pt !important;
+  }
+
+  .edu-desc {
+    font-size: 8.5pt !important;
+  }
+
+  /* Projects */
+  .projects-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12pt !important;
+  }
+
+  .project-card {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    border-bottom: 0.5pt solid #dddddd !important;
+    padding-bottom: 8pt !important;
+  }
+
+  .project-title {
+    font-size: 11pt !important;
+    font-weight: 700 !important;
+  }
+
+  .project-tagline {
+    font-size: 9pt !important;
+    font-weight: 600 !important;
+    margin-bottom: 6pt !important;
+  }
+
+  .project-metrics-row {
+    border: 0.5pt solid #cccccc !important;
+    padding: 4pt !important;
+    margin-bottom: 6pt !important;
+  }
+
+  .p-metric-val {
+    font-size: 10pt !important;
+  }
+
+  .p-metric-lbl {
+    font-size: 7pt !important;
+  }
+
+  .project-summary {
+    font-size: 8.5pt !important;
+    line-height: 1.4 !important;
+    margin-bottom: 6pt !important;
+  }
+
+  .tech-tag {
+    border: 0.5pt solid #999999 !important;
+    font-size: 7.5pt !important;
+    padding: 1pt 5pt !important;
+  }
+
+  /* Research & Patents */
+  .research-columns {
+    grid-template-columns: 1fr !important;
+    gap: 12pt !important;
+  }
+
+  .research-item, .patent-item {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin-bottom: 6pt !important;
+  }
+
+  .research-item-title, .patent-name {
+    font-size: 9.5pt !important;
+    font-weight: 700 !important;
+  }
+
+  .research-highlights, .patent-desc {
+    font-size: 8.5pt !important;
+  }
+}
+
