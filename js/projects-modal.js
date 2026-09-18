@@ -81,6 +81,10 @@
   };
 
   window.openProjectModal = function (projectId) {
+    if (window.isEditModeActive && window.isEditModeActive()) {
+      console.log(`[ProjectModal] 当前处于自由编辑模式，拦截项目 '${projectId}' 弹窗，保证正常编辑`);
+      return;
+    }
     activeProjectId = projectId;
     console.log(`[ProjectModal] Opening deep dive for project: ${projectId}`);
     renderModalContent();

@@ -1345,3 +1345,60 @@ a {
   }
 }
 
+/* --- Inline Edit Mode & Data Manager Styles --- */
+.editable-active {
+  outline: 1.5px dashed var(--accent-cyan) !important;
+  background: rgba(56, 189, 248, 0.08) !important;
+  border-radius: 4px;
+  cursor: text !important;
+  transition: all 0.2s ease;
+  min-height: 1em;
+  display: inline-block;
+}
+
+.editable-active:hover {
+  background: rgba(56, 189, 248, 0.14) !important;
+  outline-color: var(--accent-indigo) !important;
+}
+
+.editable-active:focus {
+  outline: 2px solid var(--accent-cyan) !important;
+  background: rgba(56, 189, 248, 0.2) !important;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.3) !important;
+}
+
+.icon-btn.active-edit {
+  background: rgba(56, 189, 248, 0.25) !important;
+  border-color: var(--accent-cyan) !important;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+}
+
+.edit-mode-bar {
+  position: fixed;
+  top: 68px;
+  left: 0;
+  right: 0;
+  background: rgba(15, 23, 42, 0.95);
+  border-bottom: 2px solid var(--accent-cyan);
+  padding: 10px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 9999;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(16px);
+  animation: slideDownBar 0.25s ease-out;
+}
+
+@keyframes slideDownBar {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+

@@ -9,8 +9,8 @@
   <meta name="author" content="Kai Li (李凯)">
 
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/print.css" media="print">
+  <link rel="stylesheet" href="css/style.css?v=20260918_v4">
+  <link rel="stylesheet" href="css/print.css?v=20260918_v4" media="print">
 
   <!-- Favicon placeholder (inline SVG) -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
@@ -42,6 +42,16 @@
         <!-- Theme Switcher -->
         <button id="theme-toggle-btn" class="icon-btn" onclick="window.toggleTheme()" title="Switch Theme">
           <span>🌙</span>
+        </button>
+
+        <!-- Edit Mode Toggle -->
+        <button id="edit-toggle-btn" class="icon-btn" onclick="window.toggleEditMode()" title="开启/关闭在线自由填空与编辑">
+          <span>✏️</span>
+        </button>
+
+        <!-- Data Manage Modal Toggle -->
+        <button id="data-manage-btn" class="icon-btn" onclick="window.openDataManageModal()" title="上传导入数据 / 导出备份">
+          <span>📤</span>
         </button>
 
         <!-- Mobile Menu Toggle -->
@@ -285,6 +295,43 @@
     </div>
   </div>
 
+  <!-- Data Manage Modal -->
+  <div id="data-manage-modal" class="modal-overlay">
+    <div class="modal-container" style="max-width: 750px;">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title">📤 简历数据管理与上传</h2>
+          <div class="modal-subtitle" style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
+            基于 D:\code\resume-design-release-v6.0.0\tools\resume_canonical_data.json 规范数据
+          </div>
+        </div>
+        <button class="modal-close-btn" onclick="window.closeDataManageModal()">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 20px 24px;">
+        <div style="display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
+          <label class="btn btn-primary btn-sm" style="cursor: pointer;">
+            📂 上传本地 JSON 数据
+            <input type="file" accept=".json" style="display: none;" onchange="window.handleLocalJsonUpload(event)">
+          </label>
+          <button class="btn btn-outline btn-sm" onclick="window.exportCurrentJsonData()">
+            📥 导出当前数据
+          </button>
+          <button class="btn btn-outline btn-sm" style="color: #ef4444; border-color: #ef4444;" onclick="window.resetToDefaultCanonicalData()">
+            🔄 恢复初始规范数据
+          </button>
+        </div>
+        <div style="margin-bottom: 10px; font-size: 13px; color: var(--text-muted);">
+          支持上传本地的 resume_canonical_data.json 文件，或直接在此处编辑修改：
+        </div>
+        <textarea id="data-json-textarea" style="width: 100%; height: 320px; font-family: monospace; font-size: 12px; background: rgba(0,0,0,0.3); color: #38bdf8; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; box-sizing: border-box; resize: vertical;"></textarea>
+      </div>
+      <div class="modal-footer" style="padding: 16px 24px; display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--border-color);">
+        <button class="btn btn-outline btn-sm" onclick="window.closeDataManageModal()">取消</button>
+        <button class="btn btn-primary btn-sm" onclick="window.applyTextareaJson()">确认应用数据</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer class="footer">
     <div class="container footer-content">
@@ -299,11 +346,13 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/data.js"></script>
-  <script src="js/theme.js"></script>
-  <script src="js/i18n.js"></script>
-  <script src="js/projects-modal.js"></script>
-  <script src="js/main.js"></script>
+  <!-- Scripts with Cache-Busting Version Query -->
+  <script src="js/data.js?v=20260918_v4"></script>
+  <script src="js/data-manager.js?v=20260918_v4"></script>
+  <script src="js/theme.js?v=20260918_v4"></script>
+  <script src="js/i18n.js?v=20260918_v4"></script>
+  <script src="js/projects-modal.js?v=20260918_v4"></script>
+  <script src="js/main.js?v=20260918_v4"></script>
 </body>
 </html>
 

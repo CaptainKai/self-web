@@ -7,6 +7,7 @@
   let activeProjectFilter = "all";
 
   // Core Render Functions
+    // Core Render Functions
   function renderAll() {
     const data = window.getCurrentData();
     const currentLang = window.getCurrentLang();
@@ -16,6 +17,11 @@
       console.error("[MainApp] Unable to load resume data.");
       return;
     }
+
+    // 打印关键渲染变量 (符合开发规范)
+    console.log("[MainApp] 待渲染工作经历数:", data.experience?.items?.length, data.experience?.items?.map(i => i.company));
+    console.log("[MainApp] 待渲染教育背景数:", data.education?.items?.length, data.education?.items?.map(i => i.degree));
+    console.log("[MainApp] 待渲染专利成果数:", data.research?.patents?.length, data.research?.patents?.map(p => `${p.name} (${p.patentNo})`));
 
     renderNav(data.nav);
     renderHero(data.hero);
@@ -30,6 +36,9 @@
 
     console.log("[MainApp] Render completed successfully.");
   }
+
+  // 挂载至全局 window，供数据管理器 (data-manager.js) 动态触发重绘
+  window.renderAll = renderAll;
 
   function renderNav(nav) {
     const navMap = {
@@ -207,7 +216,10 @@
         .map(
           (pt) => `
           <div class="glass-card patent-item">
-            <h4 class="patent-name">${pt.name}</h4>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 6px; flex-wrap: wrap;">
+              <h4 class="patent-name" style="margin: 0;">${pt.name}</h4>
+              ${pt.patentNo ? `<span class="badge" style="color: var(--accent-cyan); font-family: var(--font-mono); font-size: 0.8rem; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); padding: 2px 8px; border-radius: 4px;">${pt.patentNo}</span>` : ''}
+            </div>
             <div class="patent-owner">${pt.owner}</div>
             <p class="patent-desc">${pt.desc}</p>
           </div>
