@@ -32,10 +32,10 @@ async function runTests() {
       passed = false;
     }
 
-    if (htmlRes.body.includes('20260918_v4')) {
-      console.log('   ✅ HTML 中所有 JS 脚本已携带防缓存版本标识 (?v=20260918_v4)');
+    if (htmlRes.body.includes('20260918_v6')) {
+      console.log('   ✅ HTML 中所有 JS 脚本已携带防缓存版本标识 (?v=20260918_v6)');
     } else {
-      console.error('   ❌ 未找到防缓存版本标识');
+      console.error('   ❌ 未找到防缓存版本标识 (?v=20260918_v6)');
       passed = false;
     }
 

@@ -250,19 +250,16 @@
 
     console.log(`[MainApp] Rendering ${filteredProjects.length} projects for filter: '${activeProjectFilter}'`);
 
-    container.innerHTML = filteredProjects
-      .map(
-        (item) => `
-        <div class="glass-card project-card" data-category="${item.category}" onclick="window.openProjectModal('${item.id}')">
-          ${
-            item.gallery && item.gallery.length > 0
-              ? `
+    const renderCardPreview = (item) => {
+      if (item.gallery && item.gallery.length > 0) {
+        return `
             <div class="project-card-cover-wrapper">
               <img src="${item.gallery[0].src}" alt="${item.gallery[0].title}" loading="lazy" class="project-card-cover">
               <span class="cover-badge">📸 ${item.gallery.length} 张实盘截图</span>
-            </div>
-          `
-              : `
+            </div>`;
+      }
+      if (item.architecture && item.architecture.flowSteps && item.architecture.flowSteps.length > 0) {
+        return `
             <div class="project-card-arch-preview">
               <div class="arch-preview-header">
                 <span class="arch-tag">📐 6 阶架构流</span>
@@ -271,9 +268,25 @@
               <div class="arch-preview-steps">
                 ${item.architecture.flowSteps.slice(0, 3).map((s) => `<span class="arch-mini-pill">${s.stage}</span>`).join(" ➔ ")}
               </div>
-            </div>
-          `
-          }
+            </div>`;
+      }
+      return `
+            <div class="project-card-arch-preview">
+              <div class="arch-preview-header">
+                <span class="arch-tag">⚙️ 核心技术架构</span>
+                <span class="arch-tag-sub">Producer-Consumer / Pipeline</span>
+              </div>
+              <div class="arch-preview-steps">
+                <span class="arch-mini-pill">状态探测</span> ➔ <span class="arch-mini-pill">并发队列</span> ➔ <span class="arch-mini-pill">自愈自护</span>
+              </div>
+            </div>`;
+    };
+
+    container.innerHTML = filteredProjects
+      .map(
+        (item) => `
+        <div class="glass-card project-card" data-category="${item.category}" onclick="window.openProjectModal('${item.id}')">
+          ${renderCardPreview(item)}
 
           <div class="project-top">
             <span class="project-badge">${item.badge}</span>

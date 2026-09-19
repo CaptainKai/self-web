@@ -1,6 +1,6 @@
 /**
  * Central Data Source for Self-Website (Resume & Portfolio)
- * Fully synchronized with D:\code\resume-design-release-v6.0.0\tools\resume_canonical_data.json
+ * Fully synchronized with D:/code/resume-design-release-v6.0.0/tools/resume_canonical_data.json
  * Supports 4 experiences, 4 educations, 6 core projects, and patent registration numbers.
  */
 
@@ -8,7 +8,7 @@ window.CANONICAL_RESUME_DATA = {
   "personal_info": {
     "name": "李凯",
     "phone": "+8613121032013",
-    "email": "kaikaili98@outlook.com",
+    "email": "m13121032012@163.com",
     "address": "北京市海淀区学院路30号北京科技大学100081 北京",
     "birthday": "1998年5月23日",
     "hometown": "湖南",
@@ -413,28 +413,28 @@ window.RESUME_DATA = {
         {
           "school": "北京科技大学 (USTB)",
           "degree": "硕士研究生 (博转硕阶段)",
-          "major": "计算机科学与技术",
+          "major": "计算机技术 / 人工智能",
           "period": "2026.09 — 至今",
           "description": "硕博连读培养期间主动转为硕士培养，以聚焦工业级大模型工程、分布式系统与量化基础设施研发。"
         },
         {
           "school": "北京科技大学 (USTB)",
           "degree": "博士研究生 (硕博连读阶段)",
-          "major": "计算机科学与技术",
+          "major": "计算机系统结构",
           "period": "2020.09 — 2026.06",
           "description": "师从知名学者，主攻计算机视觉、特征解耦与多模态表征学习。在校期间发表顶刊顶会论文两篇（PRL 2023、ACM MM 2022），申请并授权 3 项国家发明专利，毕业论文题目为《基于特征解耦与引导重构的遮挡人脸识别方法研究》。"
         },
         {
           "school": "北京科技大学 (USTB)",
-          "degree": "硕士研究生(保研阶段)",
-          "major": "计算机科学与技术",
+          "degree": "工学硕士 (保研阶段)",
+          "major": "计算机技术",
           "period": "2019.09 — 2020.06",
           "description": "以优异学术成绩获得推荐免试直升保研资格，系统开启深度表征学习与大规模特征流形课题攻坚。"
         },
         {
           "school": "北京科技大学 (USTB)",
-          "degree": "本科",
-          "major": "计算机科学与技术",
+          "degree": "工学学士",
+          "major": "计算机及相关专业",
           "period": "2015.09 — 2019.06",
           "description": "系统修读计算机体系结构、操作系统、数据结构与算法、编译原理等核心课程，专业基础扎实。"
         }
@@ -914,6 +914,40 @@ window.RESUME_DATA = {
             }
           ],
           "summary": "针对高校场馆资源开放时间集中、预约竞争激烈的实际业务痛点，设计并实现实时状态监测与自动化调度平台，支持多账号协同、资源状态同步及异常容灾。引入 Watchdog 监护线程对网络超时与异常状态自动检测恢复，集成 Linux 定时调度与邮件告警，实现长期无人值守稳定运行。",
+          "architecture": {
+            "summary": "基于 Producer-Consumer 模式解耦的高可用并发预约与状态监控架构：多账号会话探测 -> 动态可用时段过滤入队 -> 优先级连续时段调度算法 -> 自动化抢单并发执行 -> Watchdog 异常自愈与 SMTP 异步告警。",
+            "flowSteps": [
+              {
+                "stage": "Step 1: 定时状态探测",
+                "detail": "后台轮询线程池发起 HTTP 探活，实时解析高校场馆可用场地与时段状态矩阵"
+              },
+              {
+                "stage": "Step 2: 共享总线安全入队",
+                "detail": "采用 Python Queue 与 Lock/Event 协同机制，消除多线程竞争写入冲突与重复预约"
+              },
+              {
+                "stage": "Step 3: 连续时段优先级调度",
+                "detail": "设计贪心连续空闲时段加权匹配算法，优先选取最长连续有效预约时段"
+              },
+              {
+                "stage": "Step 4: 多账号并发预约执行",
+                "detail": "消费线程池并发模拟认证与预约提交，支持动态重试与多账号负载均衡"
+              },
+              {
+                "stage": "Step 5: Watchdog 监护与自愈",
+                "detail": "独立守护线程监控网络挂起与超时僵死，毫秒级重启死锁线程并释放资源锁"
+              },
+              {
+                "stage": "Step 6: Linux 运维与邮件告警",
+                "detail": "Crontab 定时调度长期无人值守运行，预约结果与异常即时触发 SMTP 邮件推送"
+              }
+            ],
+            "highlights": [
+              "线程安全共享总线：采用 Queue/Lock 状态机彻底杜绝多账号高并发竞争条件与死锁异常（长期 0 次死锁）",
+              "Watchdog 异常自愈：独立监护线程对底层网络超时和假死连接毫秒级检测重启，数百周期无故障运行",
+              "连续时段贪心调度：设计动态时段加权过滤算法，将复杂预约成功率提升至 95% 以上"
+            ]
+          },
           "deepDive": {
             "problem": "高校场馆资源开放时间集中、并发访问激烈，易造成多线程竞争冲突、重复无效请求以及网络超时导致的进程阻塞死锁。",
             "solution": "基于 Producer-Consumer 架构设计实时监测流水线，构建线程安全共享数据总线，利用 Queue/Lock/Event 协同状态；设计动态资源过滤与连续时段优先级调度算法；引入 Watchdog 监护线程与 Linux 定时邮件告警。",
@@ -1651,6 +1685,40 @@ window.RESUME_DATA = {
             }
           ],
           "summary": "Engineered an automated real-time resource monitoring and concurrent booking platform for congested university venue management, featuring multi-account state synchronization, watchdog recovery, and asynchronous email notification.",
+          "architecture": {
+            "summary": "Decoupled Producer-Consumer high-availability architecture: multi-session probing -> dynamic slot filter -> greedy slot scheduler -> concurrent execution pool -> Watchdog supervisor with SMTP alerting.",
+            "flowSteps": [
+              {
+                "stage": "Step 1: Periodic Probe",
+                "detail": "Background polling worker pool initiates health checks to parse real-time slot availability matrix"
+              },
+              {
+                "stage": "Step 2: Safe Queue Ingestion",
+                "detail": "Python Queue and Lock/Event coordination eliminate thread contention, duplicate bookings, and race conditions"
+              },
+              {
+                "stage": "Step 3: Slot Scheduling",
+                "detail": "Greedy contiguous-window weighting algorithm prioritizes maximal contiguous valid booking slots"
+              },
+              {
+                "stage": "Step 4: Concurrent Execution",
+                "detail": "Consumer worker pool simulates concurrent authentication and booking submission with dynamic retry"
+              },
+              {
+                "stage": "Step 5: Watchdog Self-Healing",
+                "detail": "Dedicated watchdog supervisor detects socket stalls and deadlocks, rebooting hung threads in milliseconds"
+              },
+              {
+                "stage": "Step 6: Cron & SMTP Alerting",
+                "detail": "Linux Crontab schedules long-term unattended execution with asynchronous SMTP email dispatch upon event"
+              }
+            ],
+            "highlights": [
+              "Thread-Safe Shared Bus: Queue/Lock state machine completely eliminates high-concurrency race conditions (0 deadlocks)",
+              "Watchdog Self-Healing: dedicated supervisor detects and restarts stalled socket connections for hundreds of continuous cycles",
+              "Contiguous-Window Scheduling: greedy weighted window algorithm elevates complex booking success rate to over 95%"
+            ]
+          },
           "deepDive": {
             "problem": "Peak-hour concurrency leads to intense lock contention, duplicate requests, and socket timeouts.",
             "solution": "Decoupled detection and dispatch via Producer-Consumer queue; synchronized state via Lock/Event; introduced Watchdog supervisor.",

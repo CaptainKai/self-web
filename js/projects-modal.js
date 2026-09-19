@@ -266,11 +266,8 @@
       });
     }
 
-    // Escape key closes modal
     // Escape key closes modal & lightbox
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && activeProjectId) {
-        window.closeProjectModal();
       if (e.key === "Escape") {
         const lb = document.getElementById("global-lightbox-overlay");
         if (lb && lb.classList.contains("active")) {

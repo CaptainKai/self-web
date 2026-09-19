@@ -9,8 +9,8 @@
   <meta name="author" content="Kai Li (李凯)">
 
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="css/style.css?v=20260918_v4">
-  <link rel="stylesheet" href="css/print.css?v=20260918_v4" media="print">
+  <link rel="stylesheet" href="css/style.css?v=20260918_v7">
+  <link rel="stylesheet" href="css/print.css?v=20260918_v7" media="print">
 
   <!-- Favicon placeholder (inline SVG) -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
@@ -20,7 +20,10 @@
   <!-- Floating Navigation Bar -->
   <header class="navbar">
     <div class="container nav-container">
-      <a href="#" class="nav-brand gradient-text">Kai Li · 李凯</a>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <a href="#" class="nav-brand gradient-text">Kai Li · 李凯</a>
+        <span id="admin-status-badge" class="badge" style="display: none; font-size: 11px; padding: 2px 8px; background: rgba(16,185,129,0.15); border: 1px solid #10b981; color: #10b981;">Admin 已解锁</span>
+      </div>
 
       <nav>
         <ul class="nav-links" id="nav-links-list">
@@ -42,6 +45,11 @@
         <!-- Theme Switcher -->
         <button id="theme-toggle-btn" class="icon-btn" onclick="window.toggleTheme()" title="Switch Theme">
           <span>🌙</span>
+        </button>
+
+        <!-- Admin Auth Toggle -->
+        <button id="admin-auth-btn" class="icon-btn" onclick="window.handleAdminAuthClick()" title="管理员登录 / 权限解锁">
+          <span>🔒</span>
         </button>
 
         <!-- Edit Mode Toggle -->
@@ -295,6 +303,84 @@
     </div>
   </div>
 
+  <!-- Admin Authentication Modal -->
+  <div id="admin-auth-modal" class="modal-overlay">
+    <div class="modal-container" style="max-width: 440px;">
+      <div class="modal-header">
+        <h2 class="modal-title">🔐 管理员身份验证</h2>
+        <button class="modal-close-btn" onclick="window.AuthManager.closeAuthModal()">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 24px;">
+        <p style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 18px;">
+          简历编辑、数据导入与配置操作受权限守卫保护，请输入安全管理口令解锁特权模式：
+        </p>
+        <div class="form-group" style="margin-bottom: 12px;">
+          <input type="password" id="admin-password-input" class="form-control" placeholder="请输入管理员访问口令" onkeydown="if(event.key==='Enter') window.submitAdminAuth()">
+        </div>
+        <div id="auth-error-msg" style="display: none; font-size: 12px; color: #ef4444; margin-bottom: 12px;"></div>
+        <div style="font-size: 12px; color: var(--text-muted);">
+          💡 提示：此功能仅限博主本人使用，用于安全维护在线简历。
+        </div>
+      </div>
+      <div class="modal-footer" style="padding: 16px 24px; display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--border-color);">
+        <button class="btn btn-outline btn-sm" onclick="window.AuthManager.closeAuthModal()">取消</button>
+        <button class="btn btn-primary btn-sm" onclick="window.submitAdminAuth()">验证并解锁</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Structured Resume Editor Modal -->
+  <div id="resume-editor-modal" class="modal-overlay">
+    <div class="modal-container editor-modal-container">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title">✏️ 结构化简历信息编辑器</h2>
+          <div class="modal-subtitle" style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
+            分模块精准编辑与动态增删，即时同步至全局视图与本地存储，避免排版格式损坏
+          </div>
+        </div>
+        <button class="modal-close-btn" onclick="window.closeResumeEditor()">✕</button>
+      </div>
+
+      <!-- Editor Tabs -->
+      <div class="editor-tabs-bar">
+        <button class="editor-tab-btn" data-tab="basic" onclick="window.switchEditorTab('basic')">
+          👤 基本资料 & 关于我
+        </button>
+        <button class="editor-tab-btn active" data-tab="experience" onclick="window.switchEditorTab('experience')">
+          💼 工作与实习经历
+        </button>
+        <button class="editor-tab-btn" data-tab="education" onclick="window.switchEditorTab('education')">
+          🎓 教育背景
+        </button>
+        <button class="editor-tab-btn" data-tab="research" onclick="window.switchEditorTab('research')">
+          💡 论文与国家专利
+        </button>
+        <button class="editor-tab-btn" data-tab="projects" onclick="window.switchEditorTab('projects')">
+          🚀 核心项目列表
+        </button>
+      </div>
+
+      <!-- Editor Content Area -->
+      <div class="modal-body editor-modal-body" id="editor-tab-content">
+        <!-- Dynamically rendered via resume-editor.js -->
+      </div>
+
+      <!-- Editor Footer -->
+      <div class="modal-footer editor-modal-footer">
+        <div style="font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
+          <span>🔒 管理员特权会话</span>
+          <span>·</span>
+          <span>数据持久化存储于 localStorage</span>
+        </div>
+        <div style="display: flex; gap: 12px;">
+          <button class="btn btn-outline btn-sm" onclick="window.closeResumeEditor()">取消</button>
+          <button class="btn btn-primary btn-sm" onclick="window.saveResumeEditorData()">💾 保存并立即生效</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Data Manage Modal -->
   <div id="data-manage-modal" class="modal-overlay">
     <div class="modal-container" style="max-width: 750px;">
@@ -347,12 +433,14 @@
 
   <!-- Scripts -->
   <!-- Scripts with Cache-Busting Version Query -->
-  <script src="js/data.js?v=20260918_v4"></script>
-  <script src="js/data-manager.js?v=20260918_v4"></script>
-  <script src="js/theme.js?v=20260918_v4"></script>
-  <script src="js/i18n.js?v=20260918_v4"></script>
-  <script src="js/projects-modal.js?v=20260918_v4"></script>
-  <script src="js/main.js?v=20260918_v4"></script>
+  <script src="js/data.js?v=20260918_v7"></script>
+  <script src="js/auth-manager.js?v=20260918_v7"></script>
+  <script src="js/resume-editor.js?v=20260918_v7"></script>
+  <script src="js/data-manager.js?v=20260918_v7"></script>
+  <script src="js/theme.js?v=20260918_v7"></script>
+  <script src="js/i18n.js?v=20260918_v7"></script>
+  <script src="js/projects-modal.js?v=20260918_v7"></script>
+  <script src="js/main.js?v=20260918_v7"></script>
 </body>
 </html>
 

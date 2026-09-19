@@ -1401,4 +1401,226 @@ a {
   }
 }
 
+/* --- Admin Authentication & Control Styling --- */
+#admin-auth-btn.authed {
+  background: rgba(16, 185, 129, 0.2) !important;
+  border-color: #10b981 !important;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.35);
+}
+
+#admin-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* --- Structured Resume Editor Drawer / Modal --- */
+.editor-modal-container {
+  max-width: 960px !important;
+  height: 88vh;
+  display: flex;
+  flex-direction: column;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+.editor-modal-container .modal-header {
+  padding: 24px 28px 18px;
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--bg-card-border);
+}
+
+.editor-tabs-bar {
+  display: flex;
+  gap: 8px;
+  padding: 12px 28px;
+  background: rgba(0, 0, 0, 0.15);
+  border-bottom: 1px solid var(--bg-card-border);
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+
+.editor-tab-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.editor-tab-btn:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.editor-tab-btn.active {
+  color: #ffffff;
+  background: rgba(56, 189, 248, 0.15);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
+}
+
+.editor-modal-body {
+  padding: 24px 28px !important;
+  overflow-y: auto !important;
+  flex-grow: 1;
+}
+
+.editor-modal-footer {
+  padding: 14px 28px !important;
+  border-top: 1px solid var(--bg-card-border) !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.12);
+  flex-shrink: 0;
+}
+
+.editor-section-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  margin-bottom: 16px;
+}
+
+.editor-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--bg-card-border);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  margin-bottom: 18px;
+  transition: border-color var(--transition-fast);
+}
+
+.editor-card:hover {
+  border-color: rgba(56, 189, 248, 0.35);
+}
+
+.editor-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--bg-card-border);
+}
+
+.editor-card-badge {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent-indigo);
+  background: rgba(129, 140, 248, 0.12);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+}
+
+.btn-delete-item {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-delete-item:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: #ef4444;
+}
+
+.editor-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group.full-width {
+  grid-column: span 2;
+}
+
+.form-group label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+.form-control {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--bg-card-border);
+  color: var(--text-main);
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-family: inherit;
+  transition: all var(--transition-fast);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-control:focus {
+  border-color: var(--accent-cyan);
+  outline: none;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.25);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+textarea.form-control {
+  resize: vertical;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .editor-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .form-group.full-width {
+    grid-column: span 1;
+  }
+  .editor-modal-container {
+    height: 95vh;
+  }
+}
+
+/* Light Theme Adaptations for Resume Editor */
+.light-theme .editor-card {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.light-theme .editor-tabs-bar {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.light-theme .editor-modal-footer {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.light-theme .form-control {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.15);
+  color: #0f172a;
+}
+
+.light-theme .form-control:focus {
+  background: #ffffff;
+  border-color: var(--accent-cyan);
+}
+
+
+
 

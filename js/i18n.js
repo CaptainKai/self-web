@@ -63,6 +63,9 @@
   // Initialize
   currentLang = getSavedLang();
   document.documentElement.lang = currentLang === "zh" ? "zh-CN" : "en";
+  if (document.documentElement) {
+    document.documentElement.lang = currentLang === "zh" ? "zh-CN" : "en";
+  }
 
   document.addEventListener("DOMContentLoaded", () => {
     updateLangButton();

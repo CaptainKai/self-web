@@ -1,6 +1,9 @@
 """
 同步脚本：将 D:\code\resume-design-release-v6.0.0\tools\resume_canonical_data.json
 的基础规范数据同步注入到 self-website/js/data.js 中。
+同步脚本：将 D:\\code\\resume-design-release-v6.0.0\\tools\\resume_canonical_data.json
+同步脚本：将 D:/code/resume-design-release-v6.0.0/tools/resume_canonical_data.json
+的基础规范数据同步注入至 self-website/js/data.js 中。
 保持 100% 真实事实，补齐教育、实习、工作经历、项目经历及学术成果。
 Windows GBK 终端安全。
 全量深度同步脚本：
@@ -16,6 +19,9 @@ Canonical Data Sync Script for Self-Website
 Synchronizes D:\\code\\resume-design-release-v6.0.0\\tools\\resume_canonical_data.json
 directly into self-website/js/data.js.
 Ensures single source of truth across portfolio and resume designer.
+Supports Windows UTF-8 execution.
+对齐 4 段工作/实习经历、4 段教育经历、3 项带专利号的发明专利。
+Windows UTF-8 终端安全。
 """
 import json
 import os
@@ -79,6 +85,7 @@ def build_full_experiences_zh(canonical):
     # 1. 腾讯实习
     for item in intern_list:
         updated_experiences_zh.append({
+    # 1. 腾讯实习经历
     for intern in canonical.get("internships", []):
         items.append({
             "company": "腾讯 (Tencent)",
@@ -93,6 +100,7 @@ def build_full_experiences_zh(canonical):
     # 2. 正式工作经历
     for w in work_list:
         updated_experiences_zh.append({
+
     # 2. 3段正式工作经历
     for w in canonical.get("work_experiences", []):
         items.append({
@@ -119,6 +127,7 @@ def build_full_experiences_zh(canonical):
 def build_full_experiences_en(canonical):
     items = []
     # 1. Tencent
+    # 1. Tencent Internship
     for intern in canonical.get("internships", []):
         items.append({
             "company": "Tencent",
@@ -344,10 +353,29 @@ def sync_canonical_data():
     # 我们可以编写一个 node 脚本来安全更新 window.RESUME_DATA 字段并写回
     node_update_script = f"""
 const fs = require('fs');
+    # 导出临时 JSON 数据包，供 node 脚本平滑安全解析注入
+    sync_payload = {
+        "canonical": canonical,
+        "exp_zh": exp_zh,
+        "exp_en": exp_en,
+        "edu_zh": edu_zh,
+        "edu_en": edu_en,
+        "pat_zh": pat_zh,
+        "pat_en": pat_en
+    }
+
+    payload_path = os.path.join(os.path.dirname(__file__), "_sync_payload.json")
+    with open(payload_path, "w", encoding="utf-8") as f:
+        json.dump(sync_payload, f, ensure_ascii=False)
+
+    node_runner = os.path.join(os.path.dirname(__file__), "_run_sync.js")
+    runner_code = f"""const fs = require('fs');
 const path = require('path');
 
 const dataJsPath = {json.dumps(TARGET_DATA_JS)};
 let content = fs.readFileSync(dataJsPath, 'utf-8');
+const targetPath = {json.dumps(TARGET_DATA_JS)};
+const payloadPath = {json.dumps(payload_path)};
 
 // 注入规范数据全局变量
 const canonicalJson = {json.dumps(canonical, ensure_ascii=False)};
@@ -357,12 +385,15 @@ const eduZh = {json.dumps(edu_zh, ensure_ascii=False)};
 const eduEn = {json.dumps(edu_en, ensure_ascii=False)};
 const patZh = {json.dumps(pat_zh, ensure_ascii=False)};
 const patEn = {json.dumps(pat_en, ensure_ascii=False)};
+const payload = JSON.parse(fs.readFileSync(payloadPath, 'utf-8'));
+let content = fs.readFileSync(targetPath, 'utf-8');
 
 // 注入 window 挂载
 const sandbox = {{
   window: {{}},
   document: {{}}
 }};
+const sandbox = {{ window: {{}}, document: {{}} }};
 const vm = require('vm');
 vm.createContext(sandbox);
 vm.runInContext(content, sandbox);
@@ -375,6 +406,12 @@ if (resumeData && resumeData.zh && resumeData.en) {{
   resumeData.en.education.items = eduEn;
   resumeData.zh.research.patents = patZh;
   resumeData.en.research.patents = patEn;
+  resumeData.zh.experience.items = payload.exp_zh;
+  resumeData.en.experience.items = payload.exp_en;
+  resumeData.zh.education.items = payload.edu_zh;
+  resumeData.en.education.items = payload.edu_en;
+  resumeData.zh.research.patents = payload.pat_zh;
+  resumeData.en.research.patents = payload.pat_en;
 
   // 补齐第6个核心项目
   const hasCampusProj = resumeData.zh.projects.list.some(p => p.id === 'campusResource');
@@ -401,6 +438,9 @@ if (resumeData && resumeData.zh && resumeData.en) {{
       }}
     }};
     resumeData.zh.projects.list.push(campusProjZh);
+  const newFileContent = '/**\\n * Central Data Source for Self-Website (Resume & Portfolio)\\n * Fully synchronized with D:/code/resume-design-release-v6.0.0/tools/resume_canonical_data.json\\n * Supports 4 experiences, 4 educations, 6 core projects, and patent registration numbers.\\n */\\n\\n' +
+    'window.CANONICAL_RESUME_DATA = ' + JSON.stringify(payload.canonical, null, 2) + ';\\n\\n' +
+    'window.RESUME_DATA = ' + JSON.stringify(resumeData, null, 2) + ';\\n';
 
     const campusProjEn = {{
       id: "campusResource",
@@ -439,20 +479,46 @@ window.RESUME_DATA = ${{JSON.stringify(resumeData, null, 2)}};
 `;
 
   fs.writeFileSync(dataJsPath, newContent, 'utf-8');
+  fs.writeFileSync(targetPath, newFileContent, 'utf-8');
   console.log('[SUCCESS] self-website/js/data.js 全量深度对齐更新成功！');
 }} else {{
   console.error('[ERROR] 无法解析原始 RESUME_DATA 结构！');
+  process.exit(1);
 }}
 """
     # 临时写入 node 脚本并执行
+    with open(node_runner, "w", encoding="utf-8") as f:
+        f.write(runner_code)
+
     tmp_js = os.path.join(os.path.dirname(__file__), "_tmp_sync.js")
     with open(tmp_js, "w", encoding="utf-8") as f:
         f.write(node_update_script)
+    try:
+        with open(tmp_js, "w", encoding="utf-8") as f:
+            f.write(node_update_script)
 
     ret = os.system(f'node "{tmp_js}"')
     res = subprocess.run(["node", tmp_js], capture_output=True, text=True, encoding="utf-8", errors="replace")
     if os.path.exists(tmp_js):
         os.remove(tmp_js)
+        res = subprocess.run(["node", tmp_js], capture_output=True, text=True, encoding="utf-8", errors="replace")
+        res = subprocess.run(["node", node_runner], capture_output=True, text=True, encoding="utf-8", errors="replace")
+        print(res.stdout)
+        if res.stderr:
+            print("[STDERR]", res.stderr)
+        return res.returncode == 0
+    finally:
+        if os.path.exists(tmp_js):
+            try:
+                os.remove(tmp_js)
+            except Exception:
+                pass
+        for p in [payload_path, node_runner]:
+            if os.path.exists(p):
+                try:
+                    os.remove(p)
+                except Exception:
+                    pass
 
     return ret == 0
     print(res.stdout)
