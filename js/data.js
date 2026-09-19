@@ -8,7 +8,7 @@ window.CANONICAL_RESUME_DATA = {
   "personal_info": {
     "name": "李凯",
     "phone": "+8613121032012",
-    "email": "m13121032012@163.com",
+    "email": "kaikaili98@outlook.com",
     "address": "北京市海淀区学院路30号北京科技大学100081 北京",
     "birthday": "1998年5月23日",
     "hometown": "湖南",

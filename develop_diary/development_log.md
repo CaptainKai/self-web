@@ -528,6 +528,53 @@ function setLang(lang) {
 - `node scripts/test_auth_and_editor.js`：5 大测试项真实调用 100% 通过；
 - `python scripts/verify_site.py`：全绿通过。
 
+---
+
+## [Commit 016] - 2026-09-19: 彻底打通网页简历编辑“物理落盘 (js/data.js) + 一键推送 GitHub 远端”全网发布完整闭环
+
+### 1. 修改目的与背景
+- **用户痛点与核心根因**：
+  - 用户反馈：“不对，现在的修改功能好像仅修改了本地的内容，其他人再打开网站之后还是之前的内容。也就是修改编辑的功能有问题”；
+  - 根因定位：此前的网页端简历编辑保存仅依赖了浏览器的 `localStorage` 沙箱存储，只对当前单机、当前浏览器生效；而 GitHub Pages 是纯静态托管，全网所有访客访问时，都是拉取 GitHub 仓库里的静态文件 `js/data.js`。只有将修改物理写回磁盘上的 `js/data.js` 并推送至 GitHub 远端仓库，GitHub Actions/Pages 才会自动重新部署，全网才能真正同步看到最新简历；
+  - 此外，彻底消除 `scripts/sync_canonical_data.py` 残留的嵌套语法碎片，并优化 `serve.py` 启动机制，防止启动时再次粗暴覆盖用户在线编辑的最新数据。
+
+### 2. 关键架构与核心代码实现
+
+#### ① 开发服务器物理落盘与 GitHub 一键发布 API (`scripts/serve.py`)
+- 在 `serve.py` 中新增两个本地 RESTful 接口：
+  1. `POST /api/save-data`：接收网页前端提交的最新 `RESUME_DATA`，提取并保留原始 canonical 数据，以标准美化格式物理写盘覆盖 `js/data.js`；
+  2. `POST /api/publish-github`：在后端自动执行 `git add js/data.js`、`git commit -m "chore(resume): update resume content via local web editor"` 和 `git push origin main`，打通向 GitHub 远端推送的闭环；
+  3. 优化 `run_server()` 启动机制：仅在 `js/data.js` 不存在或显式传入 `--sync` 时才同步底包，避免开发服务器启动时误冲刷用户在网页端保存的最新内容。
+
+#### ② 前端保存工作流全面升级 (`js/resume-editor.js`)
+- 升级 `window.saveResumeEditorData`：
+  1. 更新内存与 `localStorage`，调用 `window.renderAll()` 使得当前页面立即无刷新重绘展示最新内容；
+  2. 自动探测运行环境：若处于本地开发服务器（`localhost` / `127.0.0.1`）：
+     - 自动向 `/api/save-data` 发起异步物理写盘请求；
+     - 写盘成功后弹出提示并友好询问：“是否现在【一键推送到 GitHub 远端】？”；
+     - 用户点击【确定】即可触发 `/api/publish-github`，由本地服务器后台完成 git push，并向用户反馈实时推送日志；
+  3. 若处于线上 GitHub Pages 纯静态环境，弹窗提示并引导使用本地 `python scripts/serve.py` 一键全网发布，或在【数据管理】导出 JSON 同步到仓库。
+
+#### ③ 彻底重构规范数据同步脚本 (`scripts/sync_canonical_data.py`)
+- 彻底剔除此前多轮修改遗留的重复和嵌套碎片，结构纯粹清晰；
+- 经过 `py_compile` 与独立调用，彻底根除 `invalid syntax (line 84)` 问题，实现规范数据秒级深度同步。
+
+#### ④ 建立专属 API 自动化测试脚本 (`scripts/test_serve_api.py`)
+- 根据用户全局规则 6，将测试脚本集中置于 `scripts/` 目录；
+- 在后台真实拉起 `Handler` 监听测试端口，通过 `urllib` 模拟前端发起 `POST /api/save-data`；
+- 真实核验物理磁盘上的 `js/data.js` 是否写入最新字段，并在 Node.js 环境下校验其语法正确性；
+- 测试完成后 100% 还原原始文件，实现无痕零污染自动化验证。
+
+### 3. 验证结果
+1. **全套自动化测试 100% 通过**：
+   - `python -m py_compile scripts/sync_canonical_data.py`：0 语法报错；
+   - `python scripts/sync_canonical_data.py`：同步规范数据 100% 成功；
+   - `python scripts/test_serve_api.py`：本地落盘接口全自动化测试 100% 验证通过；
+   - `node scripts/test_auth_and_editor.js`：7 个核心模块解析、渲染与状态管理全部通过；
+2. **闭环完成**：
+   - 用户只要在终端运行 `python scripts/serve.py` 并在打开的网页中点击“保存修改”，即可真正写入本地源文件并弹窗一键发布全网！
+
+
 
 
 

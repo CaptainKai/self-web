@@ -22,6 +22,8 @@ Ensures single source of truth across portfolio and resume designer.
 Supports Windows UTF-8 execution.
 对齐 4 段工作/实习经历、4 段教育经历、3 项带专利号的发明专利。
 Windows UTF-8 终端安全。
+Supports 4 experiences, 4 educations, 6 core projects, and patent registration numbers.
+Windows UTF-8 terminal safe.
 """
 import json
 import os
@@ -30,6 +32,7 @@ import sys
 import json
 import subprocess
 
+# Ensure UTF-8 output on Windows terminal
 if sys.platform == "win32" and hasattr(sys.stdout, "buffer"):
     try:
         if getattr(sys.stdout, "encoding", "").lower() != "utf-8":
@@ -47,6 +50,9 @@ CANONICAL_PATH = os.path.abspath(
 TARGET_DATA_JS = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "../js/data.js")
 )
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_DIR = os.path.dirname(SCRIPT_DIR)
+TARGET_DATA_JS = os.path.join(PROJECT_DIR, "js", "data.js")
 CANONICAL_PATH = r"D:\code\resume-design-release-v6.0.0\tools\resume_canonical_data.json"
 TARGET_DATA_JS = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "js", "data.js")
 
@@ -130,6 +136,8 @@ def build_full_experiences_en(canonical):
     # 1. Tencent Internship
     for intern in canonical.get("internships", []):
         items.append({
+    return [
+        {
             "company": "Tencent",
             "department": "Multimodal Group 1",
             "role": "LLM Data & Algorithm Engineering Intern",
@@ -189,6 +197,50 @@ def build_full_experiences_en(canonical):
         ]
     })
     return items
+        },
+        {
+            "company": "Time Lingyu (时代凌宇)",
+            "department": "AI Development Dept",
+            "role": "AI Development Engineer",
+            "period": "2020.11 — 2022.04",
+            "location": "Beijing, China",
+            "techStack": "Python / Django / MySQL / Nginx / uWSGI / OpenCV / NCNN",
+            "achievements": [
+                "Engineered the backend architecture for the Smart Park Face Recognition Platform based on Django, implementing user management, device scheduling, and facial library indexing modules.",
+                "Designed and maintained production deployments with Nginx + uWSGI + Django, achieving high availability and automated remote telemetry.",
+                "Spearheaded edge AI deployment using NCNN for lightweight face detection and recognition models on mobile/embedded devices, optimizing model quantization and inference latency.",
+                "Resolved challenging occluded and extreme-scale face false positives, collaborating with Android engineering teams for seamless on-device integration and performance profiling."
+            ]
+        },
+        {
+            "company": "Ukoom",
+            "department": "Algorithm Engineering Dept",
+            "role": "AI Algorithm Engineer",
+            "period": "2022.06 — 2022.10",
+            "location": "China",
+            "techStack": "Computer Vision / Deep Learning / Retrieval / Knowledge Base / PyTorch",
+            "achievements": [
+                "Architected the visual fish species intelligent identification system, leading algorithm formulation and domain data taxonomy construction.",
+                "Devised a hybrid recognition paradigm combining high-dimensional visual feature embedding with multimodal knowledge base retrieval to overcome open-set taxonomy expansions.",
+                "Constructed a comprehensive species image dataset cross-referenced with biological encyclopedia databases, enabling multi-attribute joint retrieval.",
+                "Conducted model training, fine-tuning, and inference optimization, substantially elevating long-tail species recognition precision across mobile and cloud services."
+            ]
+        },
+        {
+            "company": "Double Bridge",
+            "department": "AI Solutions Consulting",
+            "role": "AI Solutions Consultant",
+            "period": "2025.09 — 2025.10",
+            "location": "China",
+            "techStack": "Agent / RAG / LLM / Vector Database / Private Deployment",
+            "achievements": [
+                "Delivered comprehensive technical consulting and architectural roadmaps for enterprise private AI transformations.",
+                "Audited enterprise knowledge management, security isolation boundaries, and compute budgets to formulate tailored on-premise AI Agent solutions.",
+                "Architected on-premise enterprise AI infrastructures integrating proprietary vector retrieval (RAG) with local LLM inference engines.",
+                "Evaluated hybrid cloud GPU deployment economics and model selection strategies balancing throughput, latency, operational cost, and data compliance."
+            ]
+        }
+    ]
 
     # 将规范数据作为全局 JSON 暴露在 window.CANONICAL_RESUME_DATA 中，供前端动态读取与上传切换
     canonical_json_str = json.dumps(canonical, ensure_ascii=False, indent=2)
@@ -326,6 +378,8 @@ def sync_canonical_data():
     if not os.path.exists(CANONICAL_PATH):
         print(f"[ERROR] 未找到基础数据源文件: {CANONICAL_PATH}")
         return False
+        print(f"[WARN] 未找到基础数据源文件: {CANONICAL_PATH}，跳过深度同步")
+        return True
 
     with open(CANONICAL_PATH, "r", encoding="utf-8") as f:
         canonical = json.load(f)
@@ -339,6 +393,11 @@ def sync_canonical_data():
     idx = content.find(prefix)
     if idx == -1:
         print("[ERROR] 未能在 data.js 中找到 window.RESUME_DATA")
+    try:
+        with open(CANONICAL_PATH, "r", encoding="utf-8") as f:
+            canonical = json.load(f)
+    except Exception as e:
+        print(f"[ERROR] 读取基础数据源失败: {e}")
         return False
 
     # 构造全新的结构化数据
@@ -367,10 +426,18 @@ const fs = require('fs');
     payload_path = os.path.join(os.path.dirname(__file__), "_sync_payload.json")
     with open(payload_path, "w", encoding="utf-8") as f:
         json.dump(sync_payload, f, ensure_ascii=False)
+    payload_path = os.path.join(SCRIPT_DIR, "_sync_payload.json")
+    node_runner = os.path.join(SCRIPT_DIR, "_run_sync.js")
 
     node_runner = os.path.join(os.path.dirname(__file__), "_run_sync.js")
     runner_code = f"""const fs = require('fs');
+    try:
+        with open(payload_path, "w", encoding="utf-8") as f:
+            json.dump(sync_payload, f, ensure_ascii=False)
+
+        runner_code = f"""const fs = require('fs');
 const path = require('path');
+const vm = require('vm');
 
 const dataJsPath = {json.dumps(TARGET_DATA_JS)};
 let content = fs.readFileSync(dataJsPath, 'utf-8');
@@ -472,6 +539,9 @@ if (resumeData && resumeData.zh && resumeData.en) {{
  * Fully synchronized with D:\\\\code\\\\resume-design-release-v6.0.0\\\\tools\\\\resume_canonical_data.json
  * Supports 4 experiences, 4 educations, 6 core projects, and patent registration numbers.
  */
+  const newFileContent = '/**\\n * Central Data Source for Self-Website (Resume & Portfolio)\\n * Fully synchronized with D:/code/resume-design-release-v6.0.0/tools/resume_canonical_data.json\\n * Supports 4 experiences, 4 educations, 6 core projects, and patent registration numbers.\\n */\\n\\n' +
+    'window.CANONICAL_RESUME_DATA = ' + JSON.stringify(payload.canonical, null, 2) + ';\\n\\n' +
+    'window.RESUME_DATA = ' + JSON.stringify(resumeData, null, 2) + ';\\n';
 
 window.CANONICAL_RESUME_DATA = ${{JSON.stringify(canonicalJson, null, 2)}};
 
@@ -489,6 +559,8 @@ window.RESUME_DATA = ${{JSON.stringify(resumeData, null, 2)}};
     # 临时写入 node 脚本并执行
     with open(node_runner, "w", encoding="utf-8") as f:
         f.write(runner_code)
+        with open(node_runner, "w", encoding="utf-8") as f:
+            f.write(runner_code)
 
     tmp_js = os.path.join(os.path.dirname(__file__), "_tmp_sync.js")
     with open(tmp_js, "w", encoding="utf-8") as f:

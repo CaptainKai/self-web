@@ -511,8 +511,10 @@
     }
 
     // 持久化存储
+    // 持久化存储至当前浏览器
     localStorage.setItem("SELF_WEBSITE_CUSTOM_DATA", JSON.stringify(window.RESUME_DATA));
     console.log("[ResumeEditor] 数据已成功持久化至 localStorage！");
+    console.log("[ResumeEditor] 数据已成功更新至当前浏览器内存与 localStorage！");
 
     // 全站重新渲染
     if (window.renderAll) {
@@ -522,6 +524,60 @@
     window.closeResumeEditor();
     if (window.AuthManager) {
       alert("🎉 简历修改已成功保存并立即生效！");
+
+    // 检查是否在本地开发服务环境下运行 (通过 serve.py 提供 API 支持)
+    const isLocalServer = typeof window !== 'undefined' && window.location && ["localhost", "127.0.0.1"].includes(window.location.hostname);
+    console.log("[ResumeEditor] 当前运行环境检测: isLocalServer =", isLocalServer, "hostname =", (typeof window !== 'undefined' && window.location ? window.location.hostname : 'node'));
+
+    if (isLocalServer && typeof fetch !== 'undefined') {
+      // 异步向本地后台服务发送物理落盘请求
+      fetch("/api/save-data", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(window.RESUME_DATA)
+      })
+        .then(res => res.json())
+        .then(result => {
+          console.log("[ResumeEditor] 后端物理落盘结果:", result);
+          if (result && result.success) {
+            const wantPublish = confirm(
+              "🎉 简历修改已成功保存并【物理写入本地源文件 js/data.js】！\n\n" +
+              "💡 提示：为了让全网其他人访问时也能立即看到您的最新内容，是否现在【一键推送到 GitHub 远端】？\n\n" +
+              "点击【确定】立即推送到 GitHub 触发全网自动更新；\n点击【取消】仅在本地保留最新修改。"
+            );
+            if (wantPublish) {
+              console.log("[ResumeEditor] 用户触发一键推送到 GitHub 远端流程...");
+              fetch("/api/publish-github", { method: "POST" })
+                .then(r => r.json())
+                .then(pushRes => {
+                  console.log("[ResumeEditor] Git 推送结果:", pushRes);
+                  if (pushRes && pushRes.success) {
+                    alert("🚀 恭喜！最新修改已成功推送到 GitHub 远端仓库！\n\nGitHub Pages 将在数十秒内自动完成构建，全网所有人打开即可见最新简历！");
+                  } else {
+                    alert("⚠️ 提交成功，但推送到远端时遇到提示：\n" + (pushRes.log || pushRes.error || "未知异常") + "\n请您稍后在本地终端手动运行 git push。");
+                  }
+                })
+                .catch(err => {
+                  console.error("[ResumeEditor] Git 发布请求失败:", err);
+                  alert("⚠️ 推送请求失败，但本地源文件 js/data.js 已成功保存！您可随时在终端执行 git push 提交。");
+                });
+            }
+          } else {
+            alert("⚠️ 网页已生效，但写入本地源文件时遇到提示：" + (result.error || "未知错误"));
+          }
+        })
+        .catch(err => {
+          console.warn("[ResumeEditor] 本地后台服务连接异常 (可能未通过 serve.py 启动):", err);
+          alert("🎉 简历修改已在当前浏览器生效！\n(提示：若需全网生效，请在终端运行 python scripts/serve.py 后编辑，或在【数据管理】中导出数据更新本地文件)");
+        });
+    } else {
+      // 线上纯静态环境 (如 GitHub Pages 访问) 或非浏览器测试环境
+      if (typeof alert !== 'undefined') {
+        alert(
+          "🎉 简历修改已在当前浏览器即时生效！\n\n" +
+          "💡 提示：当前处于线上纯静态托管环境。若要让【全网所有其他人】都能看到您的最新修改，推荐在本地运行 python scripts/serve.py 进行一键全网发布，或在【数据管理】中导出数据同步到仓库。"
+        );
+      }
     }
   };
 })();
